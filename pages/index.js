@@ -42,24 +42,13 @@ function Titulo(props) {
           color: ${appConfig.theme.colors.neutrals["000"]};
           font-size: 24px;
           font-weight: 600;
+          text-shadow : 2px 2px ${appConfig.theme.colors.primary['700']}
         }
       `}</style>
     </>
   );
 }
 
-{
-  /*function HomePage() {
-  return (
-    <div>
-      <GlobalStyle />
-      <Titulo tag="h1">Boas vindas de volta!</Titulo>
-      <h2>Discord - Alura Matrix</h2>
-    </div>
-  );
-}
-export default HomePage;*/
-}
 export default function PaginaInicial() {
   const username = "PatriciaLengert";
 
@@ -71,9 +60,9 @@ export default function PaginaInicial() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: appConfig.theme.colors.primary[500],
+          backgroundColor: appConfig.theme.colors.neutrals['000'],
           backgroundImage:
-            "url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)",
+            "url(https://i.pinimg.com/originals/b9/58/0d/b9580d22ef5b75e54c7972d2174d402a.jpg)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundBlendMode: "multiply",
@@ -90,11 +79,12 @@ export default function PaginaInicial() {
             },
             width: "100%",
             maxWidth: "700px",
-            borderRadius: "5px",
+            borderRadius: "8px",
             padding: "32px",
             margin: "16px",
+            backgroundColor: 'rgba(0,0,0,0.85)',
+            border: `solid 1px ${appConfig.theme.colors.primary[700]}`,
             boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
-            backgroundColor: appConfig.theme.colors.neutrals[700],
           }}
         >
           {/* Formulário */}
@@ -105,16 +95,17 @@ export default function PaginaInicial() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              width: { xs: "100%", sm: "50%" },
+              width: { xs: "100%", sm: "60%" },
               textAlign: "center",
               marginBottom: "32px",
             }}
           >
-            <Titulo tag="h2">Boas vindas de volta!</Titulo>
+            <Titulo tag="h2">Bem vindos a minha Galáxia!</Titulo>
             <Text
               variant="body3"
               styleSheet={{
-                marginBottom: "32px",
+                marginTop:"5px",
+                marginBottom: "35px",
                 color: appConfig.theme.colors.neutrals[300],
               }}
             >
@@ -123,12 +114,15 @@ export default function PaginaInicial() {
 
             <TextField
               fullWidth
+              styleSheet={{
+                marginBottom: "5px"
+              }}
               textFieldColors={{
                 neutral: {
                   textColor: appConfig.theme.colors.neutrals[200],
-                  mainColor: appConfig.theme.colors.neutrals[900],
+                  mainColor: appConfig.theme.colors.neutrals[500],
                   mainColorHighlight: appConfig.theme.colors.primary[500],
-                  backgroundColor: appConfig.theme.colors.neutrals[800],
+                  backgroundColor: appConfig.theme.colors.neutrals[700],
                 },
               }}
             />
@@ -154,8 +148,8 @@ export default function PaginaInicial() {
               alignItems: "center",
               maxWidth: "200px",
               padding: "16px",
-              backgroundColor: appConfig.theme.colors.neutrals[800],
               border: "1px solid",
+              backgroundColor: 'rgba(33,41,49,0.7)',
               borderColor: appConfig.theme.colors.neutrals[999],
               borderRadius: "10px",
               flex: 1,
@@ -173,7 +167,7 @@ export default function PaginaInicial() {
               variant="body4"
               styleSheet={{
                 color: appConfig.theme.colors.neutrals[200],
-                backgroundColor: appConfig.theme.colors.neutrals[900],
+                backgroundColor: appConfig.theme.colors.neutrals[800],
                 padding: "3px 10px",
                 borderRadius: "1000px",
               }}
