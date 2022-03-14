@@ -1,30 +1,60 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import appConfig from "../config.json";
+import { useRouter } from "next/router";
+import { createClient } from "@supabase/supabase-js";
+import { ButtonSendSticker } from "../src/components/ButtonSendSticker.js";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMwNDQ2NSwiZXhwIjoxOTU4ODgwNDY1fQ.vuj-57OR-TiDRN2wV-Y9rDAmd6xBfe-0mpgg-7d4lPc";
+const SUPABASE_URL = "https://syfjjhwfurfrkohfduyn.supabase.co";
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function escutaMensagens(adicionaMensagem) {
+  return supabaseClient
+    .from("mensagens")
+    .on("INSERT", (resposta) => {
+      adicionaMensagem(resposta.new);
+    })
+    .subscribe();
+}
 
 export default function ChatPage() {
+  const roteamento = useRouter();
+  const usuarioLogado = roteamento.query.username;
+  //console.log(roteamento.query)
+  //console.log('usuario', usuarioLogado)
   const [mensagem, setMensagem] = useState("");
   const [listaDeMensagens, setListaDeMensagens] = useState([]);
 
-  /*
-    // Usuário
-    - Usuário digita no campo textarea
-    - Aperta enter para enviar
-    - Tem que adicionar o texto na listagem
-    
-    // Dev
-    - [X] Campo criado
-    - [X] Vamos usar o onChange usa o useState (ter if pra caso seja enter pra limpar a variavel)
-    - [X] Lista de mensagens 
-    */
+  useEffect(() => {
+    supabaseClient
+      .from("mensagens")
+      .select("*")
+      .order("id", { ascending: false })
+      .then(({ data }) => {
+        //console.log(data);
+        setListaDeMensagens(data);
+      });
+
+    escutaMensagens((novaMensagem) => {
+      setListaDeMensagens((valorAtual) => {
+        return [novaMensagem, ...valorAtual];
+      });
+    });
+  }, []);
+
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
-      id: listaDeMensagens.length + 1,
-      de: "PatriciaLengert",
+      de: usuarioLogado,
       texto: novaMensagem,
     };
 
-    setListaDeMensagens([mensagem, ...listaDeMensagens]);
+    supabaseClient
+      .from("mensagens")
+      .insert([mensagem])
+      .then(({ data }) => {});
+
     setMensagem("");
   }
 
@@ -60,8 +90,8 @@ export default function ChatPage() {
           borderRadius: "5px",
           backgroundColor: appConfig.theme.colors.neutrals[700],
           height: "100%",
-          maxWidth: "95%",
-          maxHeight: "95vh",
+          maxWidth: "90%",
+          maxHeight: "90vh",
           padding: "32px",
         }}
       >
@@ -82,13 +112,6 @@ export default function ChatPage() {
             mensagens={listaDeMensagens}
             handleDeletaMensagem={handleDeletaMensagem}
           />
-          {/* {listaDeMensagens.map((mensagemAtual) => {
-                        return (
-                            <li key={mensagemAtual.id}>
-                                {mensagemAtual.de}: {mensagemAtual.texto}
-                            </li>
-                        )
-                    })} */}
           <Box
             as="form"
             styleSheet={{
@@ -121,15 +144,27 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
-            <Button
-            onClick={() => handleNovaMensagem(mensagem)}
-            label='Enviar'
-            styleSheet={{maxWidth: '100px'}}
-            buttonColors={{
-              contrastColor: appConfig.theme.colors.neutrals["000"],
-              mainColor: appConfig.theme.colors.primary[500],
-            }}
+            <ButtonSendSticker
+              onStickerClick={(sticker) => {
+                //console.log('[USANDO DO COMPONENTE] salvando sticker no banco', sticker)
+                handleNovaMensagem(":sticker: " + sticker);
+              }}
             />
+            <Button
+              onClick={() => handleNovaMensagem(mensagem)}
+              label="Enviar"
+              styleSheet={{
+                borderRadius: '10px',
+                  minWidth: "75px",
+                  minHeight: "50px",
+                  marginBottom: '8px', 
+                }}
+              buttonColors={{
+                contrastColor: appConfig.theme.colors.neutrals["000"],
+                mainColor: appConfig.theme.colors.primary[500],
+              }}
+            />
+            
           </Box>
         </Box>
       </Box>
@@ -219,26 +254,35 @@ function MessageList(props) {
               <Text
                 onClick={handleDeletaMensagem}
                 styleSheet={{
-                  fontSize: '10px',
-                  fontWeight: 'bold',
-                  marginLeft: 'auto',
-                  color: '#FFF',
-                  backgroundColor: appConfig.theme.colors.neutrals['700'],
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-              }}
+                  fontSize: "10px",
+                  fontWeight: "bold",
+                  marginLeft: "auto",
+                  color: "#FFF",
+                  backgroundColor: appConfig.theme.colors.neutrals["700"],
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
                 tag="span"
                 data-id={mensagem.id}
               >
                 X
               </Text>
             </Box>
-            {mensagem.texto}
+            {mensagem.texto.startsWith(":sticker:") ? (
+              <Image src={mensagem.texto.replace(":sticker:", "")}
+                styleSheet={{
+                  maxWidth:"100px",
+                  maxHeight:'100px',
+                }}
+              />
+            ) : (
+              mensagem.texto
+            )}
           </Text>
         );
       })}

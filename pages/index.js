@@ -22,7 +22,7 @@ function Titulo(props) {
 
 export default function PaginaInicial() {
   //const username = "PatriciaLengert";
-  const [username, setUsername] = useState('PatriciaLengert');
+  const [username, setUsername] = useState('');
   const roteamento = useRouter();
 
   return (
@@ -64,11 +64,11 @@ export default function PaginaInicial() {
             as="form"
             onSubmit={function (ev) {
               ev.preventDefault();
-              console.log("Form submetido");
+              //console.log("Form submetido");
               //Roteamento direto pelo react
               //window.location.href = './chat'
               //Roteamento usando netx/routers
-              roteamento.push("./chat");
+              roteamento.push(`./chat?username=${username}`);
             }}
             styleSheet={{
               display: "flex",
@@ -93,6 +93,7 @@ export default function PaginaInicial() {
             </Text>
 
             <TextField
+            placeholder="Digite seu usuário do GitHub"
               value={username}
               onChange={function Handler(ev) {
                 //console.log("usuário digitou", ev.target.value);
