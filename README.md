@@ -2,7 +2,7 @@
 
 ### Sobre
 Projeto criado na Imersão React 2022 da @alura 🚀
-Com base nas aulas da Imersão criei o meu projeto do AluraCord personalizado!
+<p>Com base nas aulas da Imersão criei o meu projeto do AluraCord personalizado!</p>
 
 ### Tecnologias
 
